@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:test_supabase/bloc/user_bloc.dart';
 import 'package:test_supabase/data/di/service_locator.dart';
+import 'package:test_supabase/view/pages/home.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,8 +30,7 @@ class Main extends StatelessWidget {
           useMaterial3: true,
         ),
         home: const Scaffold(
-          backgroundColor: Colors.blueGrey,
-          body: Center(child: Placeholder()),
+          body: Home(),
         ),
       ),
     );

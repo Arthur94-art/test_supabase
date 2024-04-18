@@ -6,8 +6,12 @@ import 'package:test_supabase/data/supabase/collection_keys.dart';
 
 abstract class SupaBaseService {
   Future<List<UserModel>> fetchUsers();
-  Future<void> addUser(UserModel user);
-  Future<void> deleteUser(String userId);
+  Future<void> addUser({
+    required String firstName,
+    required String lastName,
+    required String email,
+  });
+  Future<void> deleteUser(int userId);
 }
 
 class SupaBaseServiceImpl implements SupaBaseService {
@@ -23,7 +27,9 @@ class SupaBaseServiceImpl implements SupaBaseService {
   Future<List<UserModel>> fetchUsers() async {
     try {
       final response = await _client.from(_sbKeys.usersKey).select();
-      return response.map((e) => UserModel.fromJson(e)).toList();
+      final userList = response.map((e) => UserModel.fromJson(e)).toList();
+      userList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      return userList;
     } catch (e) {
       log(e.toString());
       throw Exception(e);
@@ -31,13 +37,19 @@ class SupaBaseServiceImpl implements SupaBaseService {
   }
 
   @override
-  Future<void> addUser(UserModel user) async {
+  Future<UserModel> addUser({
+    required String firstName,
+    required String lastName,
+    required String email,
+  }) async {
     try {
-      final response =
-          await _client.from(_sbKeys.usersKey).insert(user.toJson());
-      if (response != null) {
-        throw Exception('Failed to add user: $response');
-      }
+      var response = await _client.from(_sbKeys.usersKey).insert({
+        _sbKeys.firstName: firstName,
+        _sbKeys.lastName: lastName,
+        _sbKeys.email: email,
+        _sbKeys.createdAt: DateTime.now().toIso8601String(),
+      }).select();
+      return UserModel.fromJson(response.first);
     } catch (e) {
       log(e.toString());
       throw Exception('Failed to add user: $e');
@@ -45,7 +57,7 @@ class SupaBaseServiceImpl implements SupaBaseService {
   }
 
   @override
-  Future<void> deleteUser(String userId) async {
+  Future<void> deleteUser(int userId) async {
     try {
       final response = await _client
           .from(_sbKeys.usersKey)
@@ -60,3 +72,8 @@ class SupaBaseServiceImpl implements SupaBaseService {
     }
   }
 }
+
+
+
+//re_LaU1h8Qv_GsTmgm7XuGnDXsphao5Dm3gA
+

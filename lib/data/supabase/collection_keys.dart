@@ -12,4 +12,5 @@ class CollectionKeys {
   String get lastName => 'last_name';
   String get email => 'email';
   String get id => 'id';
+  String get createdAt => 'created_at';
 }

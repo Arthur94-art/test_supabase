@@ -10,9 +10,35 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   final SupaBaseServiceImpl _sbService = locator<SupaBaseServiceImpl>();
   UserBloc() : super(UserInitialState()) {
     on<UserFetchEvent>((event, emit) async {
+      emit(UserInitialState());
       try {
         final List<UserModel> userList = await _sbService.fetchUsers();
         emit(UserLoadedState(userList: userList));
+      } catch (_) {
+        emit(UserFailureState());
+      }
+    });
+    on<UserAddEvent>((event, emit) async {
+      try {
+        final UserModel newUser = await _sbService.addUser(
+          firstName: event.name,
+          lastName: event.lastName,
+          email: event.email,
+        );
+        final currentState = state;
+        if (currentState is UserLoadedState) {
+          final List<UserModel> updatedUserList =
+              List.from(currentState.userList)..add(newUser);
+          updatedUserList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+          emit(UserLoadedState(userList: updatedUserList));
+        }
+      } catch (_) {
+        emit(UserFailureState());
+      }
+    });
+    on<UserDeleteEvent>((event, emit) async {
+      try {
+        await _sbService.deleteUser(event.id);
       } catch (_) {
         emit(UserFailureState());
       }

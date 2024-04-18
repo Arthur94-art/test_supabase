@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:test_supabase/bloc/user_bloc.dart';
+import 'package:test_supabase/bloc/email/email_bloc.dart';
+import 'package:test_supabase/bloc/user/user_bloc.dart';
 import 'package:test_supabase/data/di/service_locator.dart';
 import 'package:test_supabase/view/pages/home.dart';
 
@@ -22,7 +23,10 @@ class Main extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [BlocProvider.value(value: UserBloc())],
+      providers: [
+        BlocProvider.value(value: UserBloc()),
+        BlocProvider.value(value: EmailBloc()),
+      ],
       child: MaterialApp(
         title: 'Test supabase',
         theme: ThemeData(

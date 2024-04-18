@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:test_supabase/bloc/user_bloc.dart';
+import 'package:test_supabase/bloc/user/user_bloc.dart';
 
 class CustomPopup extends StatefulWidget {
   const CustomPopup({
@@ -33,7 +33,7 @@ class _CustomPopupState extends State<CustomPopup> {
         }
       },
       child: AlertDialog(
-        title: const Text('Введіть дані'),
+        title: const Text('Enter data'),
         content: SingleChildScrollView(
           child: ListBody(
             children: <Widget>[
@@ -71,9 +71,10 @@ class _CustomPopupState extends State<CustomPopup> {
   void _createUser() {
     context.read<UserBloc>().add(
           UserAddEvent(
-              name: _nameController.text,
-              lastName: _lastNameController.text,
-              email: _emailController.text),
+            name: _nameController.text,
+            lastName: _lastNameController.text,
+            email: _emailController.text,
+          ),
         );
   }
 }

@@ -18,18 +18,6 @@ class UserAddEvent extends UserEvent {
 
 class UserDeleteEvent extends UserEvent {
   final int id;
-  UserDeleteEvent({required this.id});
-}
-
-class AddEmailToListEvent extends UserEvent {
-  final String name;
-  final String lastName;
   final String email;
-  AddEmailToListEvent({
-    required this.email,
-    required this.name,
-    required this.lastName,
-  });
+  UserDeleteEvent({required this.id, required this.email});
 }
-
-class SendOnUserEmailEvent extends UserEvent {}

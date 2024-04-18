@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:test_supabase/bloc/user_bloc.dart';
+import 'package:test_supabase/bloc/email/email_bloc.dart';
+import 'package:test_supabase/bloc/user/user_bloc.dart';
+import 'package:test_supabase/data/models/email_model.dart';
 import 'package:test_supabase/data/models/user_model.dart';
 import 'package:test_supabase/view/widgets/custom_popup.dart';
 import 'package:test_supabase/view/widgets/user_card.dart';
@@ -14,6 +16,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   late final UserBloc _userBloc;
+  final List<EmailDataModel> _emailDataList = [];
 
   @override
   void initState() {
@@ -24,14 +27,30 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _buildAppBar(),
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(30),
-          child: BlocBuilder<UserBloc, UserState>(
-            builder: (context, state) => _buildStateContent(state),
+    return BlocListener<EmailBloc, EmailState>(
+      listener: (context, state) {
+        if (state is EmailListState) {
+          _emailDataList.clear();
+          _emailDataList.addAll(state.emailList);
+          setState(() {});
+        }
+      },
+      child: Scaffold(
+        appBar: _buildAppBar(),
+        backgroundColor: Colors.grey[300],
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(30),
+            child: Column(
+              children: [
+                Expanded(
+                  child: BlocBuilder<UserBloc, UserState>(
+                    builder: (context, state) => _buildStateContent(state),
+                  ),
+                ),
+                _buildSendEmailButton(),
+              ],
+            ),
           ),
         ),
       ),
@@ -45,6 +64,7 @@ class _HomeState extends State<Home> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child: IconButton(
+            color: Colors.grey[300],
             icon: const Icon(Icons.add_circle_outline_rounded),
             onPressed: () => _showMyDialog(context),
           ),
@@ -80,21 +100,16 @@ class _HomeState extends State<Home> {
       key: Key(item.id.toString()),
       direction: DismissDirection.endToStart,
       onDismissed: (direction) {
-        _userBloc.add(UserDeleteEvent(id: item.id));
+        _userBloc.add(UserDeleteEvent(id: item.id, email: item.email));
         setState(() {
           userList.removeAt(index);
         });
       },
       background: _buildDismissibleBackground(),
-      child: GestureDetector(
-        onDoubleTap: () {
-          context.read<UserBloc>().add(SendOnUserEmailEvent());
-        },
-        child: UserCard(
-          name: item.firstName,
-          lastName: item.lastName,
-          email: item.email,
-        ),
+      child: UserCard(
+        name: item.firstName,
+        lastName: item.lastName,
+        email: item.email,
       ),
     );
   }
@@ -108,6 +123,28 @@ class _HomeState extends State<Home> {
         child: Icon(Icons.delete, color: Colors.white),
       ),
     );
+  }
+
+  Widget _buildSendEmailButton() {
+    if (_emailDataList.isNotEmpty) {
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SizedBox(
+          width: double.infinity,
+          height: 56,
+          child: ElevatedButton(
+            onPressed: () {
+              if (''.isEmpty) {
+                context.read<EmailBloc>().add(SendOnUserEmailEvent());
+              }
+            },
+            child: const Text('Send letter'),
+          ),
+        ),
+      );
+    } else {
+      return const SizedBox();
+    }
   }
 
   Widget _buildErrorIndicator() {

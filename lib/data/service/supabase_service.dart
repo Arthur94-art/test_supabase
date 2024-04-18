@@ -1,5 +1,4 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:test_supabase/data/models/email_model.dart';
 import 'package:test_supabase/data/models/user_model.dart';
 import 'package:test_supabase/data/supabase/collection_keys.dart';
 
@@ -11,14 +10,6 @@ abstract class SupaBaseService {
     required String email,
   });
   Future<void> deleteUser(int userId);
-
-  List<EmailDataModel> get emailList;
-
-  void addEmailToList({
-    required String name,
-    required String lastName,
-    required String email,
-  });
 }
 
 class SupaBaseServiceImpl implements SupaBaseService {
@@ -29,26 +20,6 @@ class SupaBaseServiceImpl implements SupaBaseService {
     required CollectionKeys sbKeys,
   })  : _sbKeys = sbKeys,
         _client = client;
-
-  final List<EmailDataModel> _emailList = [];
-  @override
-  List<EmailDataModel> get emailList => _emailList;
-
-  @override
-  void addEmailToList({
-    required String name,
-    required String lastName,
-    required String email,
-  }) {
-    final EmailDataModel emailData =
-        EmailDataModel(firstName: name, lastName: lastName, email: email);
-    final existingUserIndex = _emailList.indexWhere((u) => u.email == email);
-    if (existingUserIndex == -1) {
-      _emailList.add(emailData);
-    } else {
-      _emailList.removeAt(existingUserIndex);
-    }
-  }
 
   @override
   Future<List<UserModel>> fetchUsers() async {

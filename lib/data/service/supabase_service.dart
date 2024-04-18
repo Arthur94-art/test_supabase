@@ -1,6 +1,5 @@
-import 'dart:developer';
-
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:test_supabase/data/models/email_model.dart';
 import 'package:test_supabase/data/models/user_model.dart';
 import 'package:test_supabase/data/supabase/collection_keys.dart';
 
@@ -12,6 +11,14 @@ abstract class SupaBaseService {
     required String email,
   });
   Future<void> deleteUser(int userId);
+
+  List<EmailDataModel> get emailList;
+
+  void addEmailToList({
+    required String name,
+    required String lastName,
+    required String email,
+  });
 }
 
 class SupaBaseServiceImpl implements SupaBaseService {
@@ -23,6 +30,26 @@ class SupaBaseServiceImpl implements SupaBaseService {
   })  : _sbKeys = sbKeys,
         _client = client;
 
+  final List<EmailDataModel> _emailList = [];
+  @override
+  List<EmailDataModel> get emailList => _emailList;
+
+  @override
+  void addEmailToList({
+    required String name,
+    required String lastName,
+    required String email,
+  }) {
+    final EmailDataModel emailData =
+        EmailDataModel(firstName: name, lastName: lastName, email: email);
+    final existingUserIndex = _emailList.indexWhere((u) => u.email == email);
+    if (existingUserIndex == -1) {
+      _emailList.add(emailData);
+    } else {
+      _emailList.removeAt(existingUserIndex);
+    }
+  }
+
   @override
   Future<List<UserModel>> fetchUsers() async {
     try {
@@ -31,7 +58,6 @@ class SupaBaseServiceImpl implements SupaBaseService {
       userList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
       return userList;
     } catch (e) {
-      log(e.toString());
       throw Exception(e);
     }
   }
@@ -51,7 +77,6 @@ class SupaBaseServiceImpl implements SupaBaseService {
       }).select();
       return UserModel.fromJson(response.first);
     } catch (e) {
-      log(e.toString());
       throw Exception('Failed to add user: $e');
     }
   }
@@ -67,13 +92,7 @@ class SupaBaseServiceImpl implements SupaBaseService {
         throw Exception('Failed to delete user: $response');
       }
     } catch (e) {
-      log(e.toString());
       throw Exception('Failed to delete user: $e');
     }
   }
 }
-
-
-
-//re_LaU1h8Qv_GsTmgm7XuGnDXsphao5Dm3gA
-

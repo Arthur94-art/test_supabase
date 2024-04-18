@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:test_supabase/data/service/email_service.dart';
 import 'package:test_supabase/data/service/supabase_service.dart';
 import 'package:test_supabase/data/supabase/collection_keys.dart';
 
@@ -17,5 +18,8 @@ void setupLocator() {
       client: locator<SupabaseClient>(),
       sbKeys: locator<CollectionKeys>(),
     ),
+  );
+  locator.registerLazySingleton<EmailServiceImpl>(
+    () => EmailServiceImpl(),
   );
 }

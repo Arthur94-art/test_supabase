@@ -86,10 +86,15 @@ class _HomeState extends State<Home> {
         });
       },
       background: _buildDismissibleBackground(),
-      child: UserCard(
-        name: item.firstName,
-        lastName: item.lastName,
-        email: item.email,
+      child: GestureDetector(
+        onDoubleTap: () {
+          context.read<UserBloc>().add(SendOnUserEmailEvent());
+        },
+        child: UserCard(
+          name: item.firstName,
+          lastName: item.lastName,
+          email: item.email,
+        ),
       ),
     );
   }

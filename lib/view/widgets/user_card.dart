@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:test_supabase/bloc/user_bloc.dart';
 
 class UserCard extends StatefulWidget {
   const UserCard({
@@ -48,15 +50,21 @@ class _UserCardState extends State<UserCard> {
               icon: Icon(
                 !_isTapped ? Icons.check_box_outline_blank : Icons.check_box,
               ),
-              onPressed: () {
-                _isTapped = !_isTapped;
-
-                setState(() {});
-              },
+              onPressed: _onCheckBoxTap,
             ),
           ],
         ),
       ),
     );
+  }
+
+  void _onCheckBoxTap() {
+    context.read<UserBloc>().add(AddEmailToListEvent(
+          email: widget._email,
+          name: widget._name,
+          lastName: widget._lastName,
+        ));
+    _isTapped = !_isTapped;
+    setState(() {});
   }
 }

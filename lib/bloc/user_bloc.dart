@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:test_supabase/data/di/service_locator.dart';
+import 'package:test_supabase/data/models/email_model.dart';
 import 'package:test_supabase/data/models/user_model.dart';
+import 'package:test_supabase/data/service/email_service.dart';
 import 'package:test_supabase/data/service/supabase_service.dart';
 
 part 'user_event.dart';
@@ -8,6 +10,7 @@ part 'user_state.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
   final SupaBaseServiceImpl _sbService = locator<SupaBaseServiceImpl>();
+  final EmailServiceImpl _emailService = locator<EmailServiceImpl>();
   UserBloc() : super(UserInitialState()) {
     on<UserFetchEvent>((event, emit) async {
       emit(UserInitialState());
@@ -42,6 +45,15 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       } catch (_) {
         emit(UserFailureState());
       }
+    });
+    on<AddEmailToListEvent>((event, emit) async {
+      _sbService.addEmailToList(
+          name: event.name, lastName: event.lastName, email: event.email);
+    });
+    on<SendOnUserEmailEvent>((event, emit) async {
+      try {
+        await _emailService.sendEmails(_sbService.emailList);
+      } catch (_) {}
     });
   }
 }

@@ -48,7 +48,7 @@ class SupaBaseServiceImpl implements SupaBaseService {
       }).select();
       return UserModel.fromJson(response.first);
     } catch (e) {
-      throw Exception('Failed to add user: $e');
+      throw Exception(e);
     }
   }
 
@@ -60,10 +60,10 @@ class SupaBaseServiceImpl implements SupaBaseService {
           .delete()
           .match({_sbKeys.id: userId});
       if (response != null) {
-        throw Exception('Failed to delete user: $response');
+        throw Exception('$response');
       }
     } catch (e) {
-      throw Exception('Failed to delete user: $e');
+      throw Exception(e);
     }
   }
 }

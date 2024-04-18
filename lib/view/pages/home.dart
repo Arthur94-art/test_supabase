@@ -28,13 +28,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<EmailBloc, EmailState>(
-      listener: (context, state) {
-        if (state is EmailListState) {
-          _emailDataList.clear();
-          _emailDataList.addAll(state.emailList);
-          setState(() {});
-        }
-      },
+      listener: (context, state) => _emailBlocHandler(state),
       child: Scaffold(
         appBar: _buildAppBar(),
         backgroundColor: Colors.grey[300],
@@ -66,7 +60,7 @@ class _HomeState extends State<Home> {
           child: IconButton(
             color: Colors.grey[300],
             icon: const Icon(Icons.add_circle_outline_rounded),
-            onPressed: () => _showMyDialog(context),
+            onPressed: () => _showDialog(context),
           ),
         ),
       ],
@@ -78,6 +72,14 @@ class _HomeState extends State<Home> {
     if (state is UserLoadedState) return _buildUserList(state.userList);
     if (state is UserFailureState) return _buildErrorIndicator();
     return const SizedBox.shrink();
+  }
+
+  void _emailBlocHandler(EmailState state) {
+    if (state is EmailListState) {
+      _emailDataList.clear();
+      _emailDataList.addAll(state.emailList);
+      setState(() {});
+    }
   }
 
   Widget _buildLoadingIndicator() {
@@ -155,7 +157,7 @@ class _HomeState extends State<Home> {
   }
 }
 
-Future<void> _showMyDialog(BuildContext context) async {
+Future<void> _showDialog(BuildContext context) async {
   return showDialog<void>(
     context: context,
     barrierDismissible: false,

@@ -37,13 +37,11 @@ class _UserCardState extends State<UserCard> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(widget._name, style: TextStyle(color: Colors.grey[300])),
+                  _buildUserInfo(widget._name),
                   const SizedBox(height: 5),
-                  Text(widget._lastName,
-                      style: TextStyle(color: Colors.grey[300])),
+                  _buildUserInfo(widget._lastName),
                   const SizedBox(height: 5),
-                  Text(widget._email,
-                      style: TextStyle(color: Colors.grey[300])),
+                  _buildUserInfo(widget._email),
                   const SizedBox(height: 5),
                 ],
               ),
@@ -59,6 +57,10 @@ class _UserCardState extends State<UserCard> {
         ),
       ),
     );
+  }
+
+  Text _buildUserInfo(String title) {
+    return Text(title, style: TextStyle(color: Colors.grey[300]));
   }
 
   void _onCheckBoxTap() {

@@ -16,13 +16,7 @@ class EmailServiceImpl implements EmailService {
   @override
   Future<void> sendEmails(List<EmailDataModel> emailDataList) async {
     try {
-      final emailDataLista = [
-        EmailDataModel(
-            email: 'test@gmail.com',
-            firstName: 'Testname',
-            lastName: 'Testsurname')
-      ];
-      final futures = emailDataLista.map((element) {
+      final futures = emailDataList.map((element) {
         return _sendEmail(element);
       }).toList();
 
@@ -35,7 +29,6 @@ class EmailServiceImpl implements EmailService {
         }
       }
     } catch (e) {
-      log(e.toString());
       throw Exception(e);
     }
   }
@@ -48,6 +41,7 @@ class EmailServiceImpl implements EmailService {
         'Authorization': 'Bearer ${dotenv.env['API_KEY']}',
       },
       body: json.encode({
+        //тимчасовий відправник
         "from": "onboarding@resend.dev",
         "to": emailData.email,
         "subject": "${emailData.firstName} ${emailData.lastName}",

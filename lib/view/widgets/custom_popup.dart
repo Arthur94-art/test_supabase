@@ -37,18 +37,9 @@ class _CustomPopupState extends State<CustomPopup> {
         content: SingleChildScrollView(
           child: ListBody(
             children: <Widget>[
-              TextField(
-                controller: _nameController,
-                decoration: const InputDecoration(hintText: 'First name'),
-              ),
-              TextField(
-                controller: _lastNameController,
-                decoration: const InputDecoration(hintText: 'Last name'),
-              ),
-              TextField(
-                controller: _emailController,
-                decoration: const InputDecoration(hintText: 'Email'),
-              ),
+              _buildTextField('First name', _nameController),
+              _buildTextField('Last name', _lastNameController),
+              _buildTextField('Email', _emailController),
             ],
           ),
         ),
@@ -65,6 +56,13 @@ class _CustomPopupState extends State<CustomPopup> {
           ),
         ],
       ),
+    );
+  }
+
+  TextField _buildTextField(String hintText, TextEditingController controller) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(hintText: hintText),
     );
   }
 
